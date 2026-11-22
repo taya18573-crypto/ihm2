@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الفعاليات (IHM) - واجهة وردية 🩷</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --pink-50: #fdf2f8;
+            --pink-100: #fce7f3;
+            --pink-200: #fbcfe8;
+            --pink-300: #f9a8d4;
+            --pink-400: #f472b6;
+            --pink-500: #ec4899;
+            --pink-600: #db2777;
+            --pink-700: #be185d;
+            --pink-800: #9d174d;
+            --bg-page: #fdf2f8;
+            --surface: #ffffff;
+            --text-main: #3b1829;
+            --text-muted: #7a4b63;
+            --border-pink: #f9a8d4;
+            --success: #15803d;
+            --warning: #b45309;
+            --danger: #be123c;
+            --font-scale: 1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, #fdf2f8 0%, #fce7f3 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            font-size: calc(15px * var(--font-scale));
+            line-height: 1.6;
+        }
+
+        .top-bar {
+            background: linear-gradient(135deg, #f472b6, #db2777);
+            color: #ffffff;
+            padding: 1rem 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.25);
+        }
+
+        .top-bar h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        .top-bar p {
+            font-size: 0.85rem;
+            opacity: 0.95;
+        }
+
+        .tab-group {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.3rem;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            border: none;
+            background: transparent;
+            color: #ffffff;
+            padding: 0.55rem 1rem;
+            border-radius: 9px;
+            font-weight: 700;
+            cursor: pointer;
+            min-height: 44px;
+        }
+
+        .tab-btn.active {
+            background: #ffffff;
+            color: var(--pink-700);
+        }
+
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 1.25rem;
+        }
+
+        .section-panel {
+            display: none;
+        }
+
+        .section-panel.active {
+            display: block;
+        }
+
+        .control-bar {
+            background: var(--surface);
+            border: 1.5px solid var(--pink-200);
+            border-radius: 16px;
+            padding: 0.9rem 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .persona-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .pill-btn {
+            border: 1.5px solid var(--pink-300);
+            background: var(--pink-50);
+            color: var(--pink-800);
+            padding: 0.45rem 0.9rem;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+            min-height: 44px;
+        }
+
+        .pill-btn.active {
+            background: var(--pink-500);
+            border-color: var(--pink-500);
+            color: #ffffff;
+        }
+
+        .context-box {
+            background: #ffffff;
+            border: 1.5px solid var(--pink-200);
+            border-right: 5px solid var(--pink-400);
+            border-radius: 12px;
+            padding: 0.8rem 1.1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .frame-box {
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+
+        .frame-box.mobile {
+            max-width: 410px;
+            border: 10px solid #4a1d33;
+            border-radius: 36px;
+            background: var(--pink-50);
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 45px rgba(219, 39, 119, 0.2);
+        }
+
+        .frame-box.desktop {
+            width: 100%;
+            border: 2px solid var(--pink-200);
+            border-radius: 20px;
+            background: var(--pink-50);
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(236, 72, 153, 0.14);
+        }
+
+        .app-shell {
+            display: flex;
+            min-height: 620px;
+        }
+
+        .frame-box.mobile .app-shell {
+            flex-direction: column;
+            min-height: 680px;
+            padding-bottom: 74px;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #ffffff;
+            border-left: 1px solid var(--pink-200);
+            padding: 1.2rem 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .frame-box.mobile .sidebar {
+            display: none;
+        }
+
+        .bottom-bar {
+            display: none;
+        }
+
+        .frame-box.mobile .bottom-bar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 68px;
+            background: #ffffff;
+            border-top: 1.5px solid var(--pink-200);
+            padding: 0 0.4rem;
+        }
+
+        .nav-btn {
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            padding: 0.65rem 0.9rem;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-align: right;
+            min-height: 44px;
+        }
+
+        .nav-btn.active {
+            background: var(--pink-100);
+            color: var(--pink-700);
+        }
+
+        .bottom-bar .nav-btn {
+            flex-direction: column;
+            gap: 0.2rem;
+            padding: 0.35rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .screen-body {
+            flex: 1;
+            padding: 1.1rem;
+            overflow-y: auto;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1.5px solid var(--pink-200);
+            border-radius: 14px;
+            padding: 1rem;
+            margin-bottom: 0.9rem;
+            box-shadow: 0 4px 12px rgba(244, 114, 182, 0.08);
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.65rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-box {
+            background: #ffffff;
+            border: 1.5px solid var(--pink-200);
+            border-radius: 12px;
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--pink-700);
+        }
+
+        .stat-lbl {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .btn {
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .btn-pink {
+            background: linear-gradient(135deg, #f472b6, #db2777);
+            color: #ffffff;
+        }
+
+        .btn-soft {
+            background: var(--pink-100);
+            color: var(--pink-800);
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.7rem;
+            font-size: 0.8rem;
+            min-height: 36px;
+        }
+
+        .input {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            border: 1.5px solid var(--pink-200);
+            border-radius: 10px;
+            background: var(--pink-50);
+            color: var(--text-main);
+            min-height: 42px;
+            margin-bottom: 0.6rem;
+        }
+
+        .progress-track {
+            height: 10px;
+            background: var(--pink-100);
+            border-radius: 999px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f472b6, #db2777);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.65rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            background: var(--pink-100);
+            color: var(--pink-800);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #ffffff;
+            border: 1.5px solid var(--pink-300);
+            border-right: 5px solid var(--pink-600);
+            padding: 0.85rem 1.1rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.14);
+            display: none;
+            z-index: 999;
+            max-width: 360px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .report-box {
+            background: #ffffff;
+            border: 1.5px solid var(--pink-200);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .report-box h2 {
+            color: var(--pink-700);
+            margin-bottom: 0.75rem;
+        }
+
+        .report-box h3 {
+            color: var(--pink-800);
+            margin: 1.1rem 0 0.4rem;
+            font-size: 1.05rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <div>
+            <h1>🩷 منظّم الفعاليات التفاعلي (IHM)</h1>
+            <p>واجهة وردية ناعمة • نموذج سارة وأمين والتقرير الكامل</p>
+        </div>
+        <div class="tab-group">
+            <button class="tab-btn active" onclick="switchTab('sim', this)">النموذج التفاعلي</button>
+            <button class="tab-btn" onclick="switchTab('doc', this)">ملخص الحل والتقرير</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="tab-sim" class="section-panel active">
+            <div class="control-bar">
+                <div class="persona-pills">
+                    <button class="pill-btn active" onclick="choosePersona('sara', this)">🩷 سارة (هاتف)</button>
+                    <button class="pill-btn" onclick="choosePersona('amine', this)">💻 أمين (حاسوب)</button>
+                    <button class="pill-btn" onclick="choosePersona('elderly', this)">👓 الحاج محمود (خط كبير)</button>
+                </div>
+                <button class="btn btn-soft btn-sm" onclick="resetState()">إعادة ضبط</button>
+            </div>
+
+            <div class="context-box" id="context-text">
+                <strong>سارة (28 سنة):</strong> تنظيم عيد ميلاد والدتها عبر الهاتف، متابعة المدعوين وتسجيل نفقات الزينة.
+            </div>
+
+            <div id="device-frame" class="frame-box mobile">
+                <div class="app-shell">
+                    <aside class="sidebar">
+                        <button class="nav-btn active" data-route="home" onclick="goRoute('home')">🏠 الرئيسية</button>
+                        <button class="nav-btn" data-route="create" onclick="goRoute('create')">➕ فعالية جديدة</button>
+                        <button class="nav-btn" data-route="guests" onclick="goRoute('guests')">👥 المدعوون</button>
+                        <button class="nav-btn" data-route="tasks" onclick="goRoute('tasks')">✅ المهام</button>
+                        <button class="nav-btn" data-route="budget" onclick="goRoute('budget')">💰 الميزانية</button>
+                        <button class="nav-btn" data-route="close" onclick="goRoute('close')">🎓 الإغلاق والشهادات</button>
+                    </aside>
+
+                    <div class="screen-body" id="screen-mount"></div>
+
+                    <nav class="bottom-bar">
+                        <button class="nav-btn active" data-route="home" onclick="goRoute('home')">
+                            <i class="fa-solid fa-house"></i>
+                            <span>الرئيسية</span>
+                        </button>
+                        <button class="nav-btn" data-route="guests" onclick="goRoute('guests')">
+                            <i class="fa-solid fa-users"></i>
+                            <span>المدعوون</span>
+                        </button>
+                        <button class="nav-btn" data-route="create" onclick="goRoute('create')">
+                            <i class="fa-solid fa-circle-plus fa-lg" style="color: var(--pink-600);"></i>
+                            <span>إضافة</span>
+                        </button>
+                        <button class="nav-btn" data-route="tasks" onclick="goRoute('tasks')">
+                            <i class="fa-solid fa-list-check"></i>
+                            <span>المهام</span>
+                        </button>
+                        <button class="nav-btn" data-route="budget" onclick="goRoute('budget')">
+                            <i class="fa-solid fa-wallet"></i>
+                            <span>الميزانية</span>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-doc" class="section-panel">
+            <div class="report-box">
+                <h2>ملخص حل التمرين التطبيقي (IHM)</h2>
+
+                <h3>1. الشخصيات وحالات الاستعمال</h3>
+                <p>سارة (28 سنة) تستخدم الهاتف بيد واحدة لتنظيم عيد ميلاد والدتها ومتابعة 15 مدعواً ونفقات الزينة. أمين (42 سنة) يستخدم الحاسوب لإدارة الندوات وتقسيم المهام إلى (قبل / أثناء / بعد) وإصدار شهادات الحضور. وأضفنا الحاج محمود لمراعاة تكبير الخط وسهولة اللمس.</p>
+
+                <h3>2. المشكلة الحقيقية (5 Whys)</h3>
+                <p>بدلاً من الاكتفاء بتكبير زر الإنشاء، عالجنا طول نموذج الإدخال الأولي بجعل العنوان والتاريخ حقولاً سريعة، مع إتاحة متابعة المدعوين والمهام والميزانية خطوة بخطوة.</p>
+
+                <h3>3. نمذجة المهام (HTA)</h3>
+                <p>الخطة الرئيسية (Plan 0): إنشاء الفعالية (1) &rarr; ثم إدارة المدعوين (2) وتنظيم المهام (3) وتسجيل النفقات (4) بشكل متكرر حتى موعد الفعالية &rarr; ثم الإغلاق وتقييم الحصيلة وإرسال الشهادات (5).</p>
+
+                <h3>4. إمكانية الوصول ومعالجة الأخطاء</h3>
+                <p>توفير أزرار بأبعاد مريحة للمس، وعدم الاعتماد على اللون وحده في الحالات، وعرض رسائل بشرية واضحة بالعربية عند ترك حقل فارغ أو تجاوز الميزانية أو تكرار مدعو.</p>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const defaultData = {
+            persona: 'sara',
+            route: 'home',
+            activeId: 1,
+            events: [
+                {
+                    id: 1,
+                    title: 'عيد ميلاد أمي الغالية',
+                    type: 'حفلة عائلية',
+                    date: '2026-11-28',
+                    budget: 25000,
+                    closed: false,
+                    guests: [
+                        { id: 1, name: 'خالتي سميرة', status: 'مؤكد' },
+                        { id: 2, name: 'عمي عبد القادر', status: 'مؤكد' },
+                        { id: 3, name: 'مريم', status: 'معلق' },
+                        { id: 4, name: 'سلمى', status: 'معتذر' }
+                    ],
+                    tasks: [
+                        { id: 1, title: 'حجز كعكة عيد الميلاد', phase: 'قبل', done: true },
+                        { id: 2, title: 'شراء الزينة والورود الوردية', phase: 'قبل', done: false },
+                        { id: 3, title: 'تقديم الضيافة', phase: 'أثناء', done: false }
+                    ],
+                    expenses: [
+                        { id: 1, title: 'كعكة عيد الميلاد', amount: 8500 },
+                        { id: 2, title: 'ورود وزينة', amount: 4500 }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: 'ندوة هندسة البرمجيات و IHM',
+                    type: 'ندوة مهنية',
+                    date: '2026-12-12',
+                    budget: 120000,
+                    closed: false,
+                    guests: [
+                        { id: 5, name: 'د. كريم بن علي', status: 'مؤكد' },
+                        { id: 6, name: 'أ. نادية منصوري', status: 'معلق' }
+                    ],
+                    tasks: [
+                        { id: 4, title: 'إعداد جدول الجلسات', phase: 'قبل', done: true },
+                        { id: 5, title: 'إرسال شهادات الحضور', phase: 'بعد', done: false }
+                    ],
+                    expenses: [
+                        { id: 3, title: 'حجز القاعة', amount: 60000 }
+                    ]
+                }
+            ]
+        };
+
+        let appData = JSON.parse(JSON.stringify(defaultData));
+
+        function resetState() {
+            appData = JSON.parse(JSON.stringify(defaultData));
+            renderScreen();
+            notify('تمت إعادة ضبط البيانات بنجاح 🩷');
+        }
+
+        function switchTab(tab, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+        }
+
+        function choosePersona(p, btn) {
+            appData.persona = p;
+            document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            const frame = document.getElementById('device-frame');
+            const ctx = document.getElementById('context-text');
+            document.documentElement.style.setProperty('--font-scale', '1');
+
+            if (p === 'sara') {
+                frame.className = 'frame-box mobile';
+                appData.activeId = 1;
+                ctx.innerHTML = '<strong>سارة (28 سنة):</strong> تنظيم عيد ميلاد والدتها عبر الهاتف، متابعة المدعوين وتسجيل نفقات الزينة.';
+            } else if (p === 'amine') {
+                frame.className = 'frame-box desktop';
+                appData.activeId = 2;
+                ctx.innerHTML = '<strong>أمين (42 سنة):</strong> الإشراف على الندوة المهنية من الحاسوب، متابعة المهام وإصدار الشهادات.';
+            } else {
+                frame.className = 'frame-box mobile';
+                appData.activeId = 1;
+                document.documentElement.style.setProperty('--font-scale', '1.18');
+                ctx.innerHTML = '<strong>الحاج محمود (67 سنة):</strong> وضع الوصول الشامل مع خط مكبّر وأزرار واضحة وسهلة اللمس.';
+            }
+            renderScreen();
+        }
+
+        function goRoute(route) {
+            appData.route = route;
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.route === route);
+            });
+            renderScreen();
+        }
+
+        function currentEvent() {
+            return appData.events.find(e => e.id === appData.activeId) || appData.events[0];
+        }
+
+        function renderScreen() {
+            const mount = document.getElementById('screen-mount');
+            const ev = currentEvent();
+
+            if (!ev && appData.route !== 'create') {
+                appData.route = 'home';
+            }
+
+            if (appData.route === 'home') {
+                const confirmedTotal = appData.events.reduce((s, e) => s + e.guests.filter(g => g.status === 'مؤكد').length, 0);
+                const doneTotal = appData.events.reduce((s, e) => s + e.tasks.filter(t => t.done).length, 0);
+
+                mount.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem;">
+                        <h2 style="font-size:1.15rem; color:var(--pink-800);">🩷 لوحة الفعاليات</h2>
+                        <button class="btn btn-pink btn-sm" onclick="goRoute('create')">+ فعالية جديدة</button>
+                    </div>
+
+                    <div class="grid-3">
+                        <div class="stat-box"><div class="stat-num">${appData.events.length}</div><div class="stat-lbl">الفعاليات</div></div>
+                        <div class="stat-box"><div class="stat-num">${confirmedTotal}</div><div class="stat-lbl">مؤكد الحضور</div></div>
+                        <div class="stat-box"><div class="stat-num">${doneTotal}</div><div class="stat-lbl">مهام منجزة</div></div>
+                    </div>
+
+                    ${appData.events.map(item => {
+                        const spent = item.expenses.reduce((a, b) => a + b.amount, 0);
+                        const rem = item.budget - spent;
+                        const pct = item.budget > 0 ? Math.min(100, Math.round((spent / item.budget) * 100)) : 0;
+                        return `
+                            <div class="card">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span class="badge">${item.type}</span>
+                                    <small style="color:var(--text-muted); font-weight:700;">${item.date}</small>
+                                </div>
+                                <h3 style="margin:0.45rem 0 0.25rem; font-size:1.05rem;">${item.title} ${item.closed ? '<span class="badge">مغلقة</span>' : ''}</h3>
+                                <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-muted);">
+                                    <span>المدعوون: ${item.guests.length}</span>
+                                    <span>المتبقي: <strong style="color:${rem < 0 ? 'var(--danger)' : 'var(--pink-700)'}">${rem.toLocaleString()} دج</strong></span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+                                <div style="display:flex; gap:0.5rem; margin-top:0.6rem;">
+                                    <button class="btn btn-pink btn-sm" style="flex:1;" onclick="appData.activeId=${item.id}; goRoute('guests')">المدعوون</button>
+                                    <button class="btn btn-soft btn-sm" style="flex:1;" onclick="appData.activeId=${item.id}; goRoute('budget')">الميزانية</button>
+                                    <button class="btn btn-soft btn-sm" onclick="appData.activeId=${item.id}; goRoute('close')">إغلاق</button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                `;
+            } else if (appData.route === 'create') {
+                mount.innerHTML = `
+                    <h2 style="font-size:1.15rem; color:var(--pink-800); margin-bottom:0.8rem;">➕ إنشاء فعالية جديدة</h2>
+                    <form class="card" onsubmit="addEventItem(event)">
+                        <label style="font-weight:700; display:block; margin-bottom:0.25rem;">عنوان الفعالية *</label>
+                        <input id="ev-title" class="input" placeholder="مثال: عيد ميلاد، حفل تخرج، ندوة">
+
+                        <label style="font-weight:700; display:block; margin-bottom:0.25rem;">التاريخ *</label>
+                        <input id="ev-date" type="date" class="input" value="2026-12-01">
+
+                        <label style="font-weight:700; display:block; margin-bottom:0.25rem;">الميزانية القصوى (دج)</label>
+                        <input id="ev-budget" type="number" class="input" placeholder="مثال: 30000" min="0">
+
+                        <button type="submit" class="btn btn-pink" style="width:100%;">حفظ الفعالية</button>
+                    </form>
+                `;
+            } else if (appData.route === 'guests') {
+                mount.innerHTML = `
+                    <h2 style="font-size:1.1rem; color:var(--pink-800); margin-bottom:0.75rem;">👥 مدعوّو: ${ev.title}</h2>
+                    <form class="card" onsubmit="addGuestItem(event)">
+                        <input id="g-name" class="input" placeholder="اسم المدعو الجديد">
+                        <button type="submit" class="btn btn-pink" style="width:100%;">إضافة مدعو</button>
+                    </form>
+                    <div class="card">
+                        ${ev.guests.map(g => `
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem; padding:0.55rem 0; border-bottom:1px solid var(--pink-100);">
+                                <strong>${g.name} <span class="badge">${g.status}</span></strong>
+                                <div style="display:flex; gap:0.3rem;">
+                                    ${['مؤكد', 'معلق', 'معتذر'].map(st => `
+                                        <button class="btn btn-sm ${g.status === st ? 'btn-pink' : 'btn-soft'}" onclick="setGuestStatus(${g.id}, '${st}')">${st}</button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (appData.route === 'tasks') {
+                mount.innerHTML = `
+                    <h2 style="font-size:1.1rem; color:var(--pink-800); margin-bottom:0.75rem;">✅ مهام: ${ev.title}</h2>
+                    <form class="card" onsubmit="addTaskItem(event)">
+                        <input id="t-title" class="input" placeholder="مهمة جديدة (تحضير الدعوات، حجز قاعة...)">
+                        <select id="t-phase" class="input">
+                            <option value="قبل">قبل الفعالية</option>
+                            <option value="أثناء">أثناء الفعالية</option>
+                            <option value="بعد">بعد الفعالية</option>
+                        </select>
+                        <button type="submit" class="btn btn-pink" style="width:100%;">إضافة مهمة</button>
+                    </form>
+                    <div class="card">
+                        ${ev.tasks.map(t => `
+                            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.55rem 0; border-bottom:1px solid var(--pink-100);">
+                                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                                    <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTaskItem(${t.id})">
+                                    <span style="${t.done ? 'text-decoration:line-through; color:var(--text-muted);' : 'font-weight:700;'}">${t.title}</span>
+                                </label>
+                                <span class="badge">${t.phase}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (appData.route === 'budget') {
+                const spent = ev.expenses.reduce((s, x) => s + x.amount, 0);
+                const rem = ev.budget - spent;
+                mount.innerHTML = `
+                    <h2 style="font-size:1.1rem; color:var(--pink-800); margin-bottom:0.75rem;">💰 ميزانية: ${ev.title}</h2>
+                    <div class="grid-3">
+                        <div class="stat-box"><div class="stat-num">${ev.budget.toLocaleString()}</div><div class="stat-lbl">الميزانية</div></div>
+                        <div class="stat-box"><div class="stat-num">${spent.toLocaleString()}</div><div class="stat-lbl">المصروف</div></div>
+                        <div class="stat-box"><div class="stat-num" style="color:${rem < 0 ? 'var(--danger)' : 'var(--success)'};">${rem.toLocaleString()}</div><div class="stat-lbl">المتبقي</div></div>
+                    </div>
+                    <form class="card" onsubmit="addExpenseItem(event)">
+                        <input id="ex-title" class="input" placeholder="بيان النفقة (مثال: بالونات، ضيافة)">
+                        <input id="ex-amount" type="number" class="input" placeholder="المبلغ بالدينار" min="1">
+                        <button type="submit" class="btn btn-pink" style="width:100%;">تسجيل نفقة</button>
+                    </form>
+                    <div class="card">
+                        ${ev.expenses.map(ex => `
+                            <div style="display:flex; justify-content:space-between; padding:0.5rem 0; border-bottom:1px solid var(--pink-100);">
+                                <span>${ex.title}</span>
+                                <strong>${ex.amount.toLocaleString()} دج</strong>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (appData.route === 'close') {
+                const confirmed = ev.guests.filter(g => g.status === 'مؤكد').length;
+                mount.innerHTML = `
+                    <h2 style="font-size:1.1rem; color:var(--pink-800); margin-bottom:0.75rem;">🎓 إغلاق الفعالية والشهادات</h2>
+                    <div class="card">
+                        <p><strong>الفعالية:</strong> ${ev.title}</p>
+                        <p><strong>المشاركون المؤكدون:</strong> ${confirmed}</p>
+                        <div style="display:flex; gap:0.5rem; margin-top:0.8rem; flex-wrap:wrap;">
+                            <button class="btn btn-soft" onclick="notify('تم إرسال شهادات الحضور إلى ${confirmed} مشاركاً 🩷')">إرسال الشهادات</button>
+                            <button class="btn btn-pink" onclick="closeEventItem(${ev.id})">إغلاق وتقييم الفعالية</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function addEventItem(e) {
+            e.preventDefault();
+            const title = document.getElementById('ev-title').value.trim();
+            const date = document.getElementById('ev-date').value;
+            const budget = Number(document.getElementById('ev-budget').value) || 0;
+            if (!title) {
+                notify('يرجى كتابة عنوان الفعالية قبل الحفظ.');
+                return;
+            }
+            const created = {
+                id: Date.now(),
+                title,
+                type: 'فعالية جديدة',
+                date: date || '2026-12-01',
+                budget,
+                closed: false,
+                guests: [],
+                tasks: [],
+                expenses: []
+            };
+            appData.events.unshift(created);
+            appData.activeId = created.id;
+            notify(`تمت إضافة "${title}" بنجاح 🩷`);
+            goRoute('home');
+        }
+
+        function addGuestItem(e) {
+            e.preventDefault();
+            const ev = currentEvent();
+            const name = document.getElementById('g-name').value.trim();
+            if (!name) return notify('اكتبي اسم المدعو أولاً.');
+            if (ev.guests.some(g => g.name === name)) return notify('هذا المدعو موجود مسبقاً في القائمة.');
+            ev.guests.push({ id: Date.now(), name, status: 'معلق' });
+            notify(`تمت إضافة ${name} 🩷`);
+            renderScreen();
+        }
+
+        function setGuestStatus(id, status) {
+            const g = currentEvent().guests.find(x => x.id === id);
+            if (g) {
+                g.status = status;
+                renderScreen();
+            }
+        }
+
+        function addTaskItem(e) {
+            e.preventDefault();
+            const ev = currentEvent();
+            const title = document.getElementById('t-title').value.trim();
+            const phase = document.getElementById('t-phase').value;
+            if (!title) return notify('اكتبي عنوان المهمة أولاً.');
+            ev.tasks.push({ id: Date.now(), title, phase, done: false });
+            notify('تمت إضافة المهمة 🩷');
+            renderScreen();
+        }
+
+        function toggleTaskItem(id) {
+            const t = currentEvent().tasks.find(x => x.id === id);
+            if (t) {
+                t.done = !t.done;
+                renderScreen();
+            }
+        }
+
+        function addExpenseItem(e) {
+            e.preventDefault();
+            const ev = currentEvent();
+            const title = document.getElementById('ex-title').value.trim();
+            const amount = Number(document.getElementById('ex-amount').value);
+            if (!title || !amount || amount <= 0) return notify('أدخلي بيان النفقة ومبلغاً صحيحاً.');
+            ev.expenses.unshift({ id: Date.now(), title, amount });
+            const spent = ev.expenses.reduce((s, x) => s + x.amount, 0);
+            if (ev.budget > 0 && spent > ev.budget) {
+                notify(`تنبيه: تم تجاوز الميزانية بـ ${(spent - ev.budget).toLocaleString()} دج.`);
+            } else {
+                notify('تم تسجيل النفقة وتحديث المتبقي 🩷');
+            }
+            renderScreen();
+        }
+
+        function closeEventItem(id) {
+            const ev = appData.events.find(x => x.id === id);
+            if (ev) {
+                ev.closed = true;
+                notify(`تم إغلاق "${ev.title}" وحفظ الحصيلة 🩷`);
+                goRoute('home');
+            }
+        }
+
+        let toastTimer;
+        function notify(text) {
+            const el = document.getElementById('toast');
+            el.textContent = text;
+            el.style.display = 'block';
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                el.style.display = 'none';
+            }, 3800);
+        }
+
+        renderScreen();
+    </script>
+</body>
+</html>
